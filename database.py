@@ -21,14 +21,14 @@ def set_record(id,name,tag,details):
     if collection.count_documents({"_id": id}, limit=1) == 0:
         collection.insert_one({"_id": id, "display_name": name,"tag": tag,"details": details})
     else:
-        collection.update_one({"_id": id}, {"$set": {"display_name": name,"details": details}})
+        collection.update_one({"_id": id}, {"$set": {"display_name": name,"tag": tag,"details": details}})
 
 def get_record(id):
     query={"_id": id}
     try:
-        collection.find_one(query)
+        return collection.find_one(query)
     except:
-        return "member not linked"
+        return None
 
 
 
