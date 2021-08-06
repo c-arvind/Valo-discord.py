@@ -6,6 +6,10 @@ from api import *
 import re
 import datetime
 from util import *
+from matplotlib import pyplot as plt
+import numpy as np
+from graph import *
+import io
 
 
 token = open("token.txt","r").readline()
@@ -134,7 +138,42 @@ async def stats(ctx,member:discord.Member=None):
         embed.add_field(name="Account Level",value=p1['acc_level'])
         await ctx.send(embed=embed)
  
-    
+@bot.command()
+async def matches(ctx,member:discord.Member=None):
 
+    if member is None:
+        member=ctx.message.author
+    details=db.get_record(member.id)
+    if details is None:
+        await ctx.send(f'{member.mention} has not linked their account')
+    else:
+        p1=await mmr_history(details['display_name'],details['tag'],details['details']['region'])
+        if p1 is None:
+            await ctx.send("NOT PLACED")
+        else:
+            ratings=[]
+            for match in p1['data']:
+                ratings.append(match['mmr_change_to_last_game'])
+            embed = discord.Embed(title=f"{details['display_name']}'s match history", description=f"Current rank: **{p1['data'][0]['currenttierpatched']}**") 
+
+            embed.add_field(name="Last game played",value=p1['data'][0]['date'])  
+            #embed.add_field(name="matches",value=ratings)
+            plot(ratings)
+            image=discord.File("saved_figure.png",filename="saved_figure.png")
+            embed.set_image(url=f"attachment://saved_figure.png")
+            await ctx.send(file=image,embed=embed)
+
+@bot.command()
+async def plot_test(ctx, *args):
+    x = args
+    try:
+        image = discord.File("test.png")
+        plt.bar(np.arange(len(x)), x)
+        plt.savefig("test.png")
+        plt.close()
+        await ctx.send(file=image)
+    except Exception as e:
+        print(e)
+              
 bot.run(token)
 

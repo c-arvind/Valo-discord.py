@@ -21,6 +21,12 @@ async def mmr(username,tag,region):
             data = (await r.json())["data"]
             return data['current_data']
 
+async def mmr_history(username,tag,region):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(f'https://api.henrikdev.xyz/valorant/v1/mmr-history/{region}/{username}/{tag}') as r:
+            data=(await r.json()) 
+            return data
+
 
 async def statistics(username,tag):
     async with aiohttp.ClientSession() as session:
