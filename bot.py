@@ -62,45 +62,49 @@ async def live(ctx,member:discord.Member):
     else:
         data=await live_match(details['display_name'],details['tag'])
         if 'message' in data: 
+            print("hello", data['message'])
             await ctx.send(data['message'])
         elif 'data' in data:
-            embed=discord.Embed(title="")
-            gamemode=""
-            iscustom="false"
-            data2=data['data']
-            #await ctx.send(data['data']['current_selected_gamemode'])   
-            if data2['current_state']=="MENUS":
-                if data2['current_selected_gamemode']=="":
-                    gamemode="custom"
-                    iscustom="true"
-                elif data2['current_selected_gamemode']=="ggteam":
-                    gamemode="spike rush"
+            try:
+                embed=discord.Embed(title="")
+                gamemode=""
+                data2=data['data']
+                #await ctx.send(data2['current_selected_gamemode'])   
+                if data2['current_state']=="MENUS":
+                    if data2['current_selected_gamemode']=="":
+                        gamemode="custom"
+                    elif data2['current_selected_gamemode']=="ggteam":
+                        gamemode="spike rush"
+                    else:
+                        gamemode=data2['current_selected_gamemode']
+                    embed=discord.Embed(title="MENUS")
+                    embed.set_author(name="{} #{}".format(details['display_name'],details['tag']))
+                    embed.add_field(name="game mode", value=gamemode, inline=True)
+                    embed.add_field(name="party size", value=data2['party_size'], inline=True)
+                    embed.timestamp = datetime.datetime.utcnow()
+                    embed.set_footer(text='\u200b')
+                    await ctx.send(embed=embed)
+            
                 else:
-                    gamemode=data2['current_selected_gamemode']
-                embed=discord.Embed(title="MENUS")
-                embed.set_author(name="{} #{}".format(details['display_name'],details['tag']))
-                embed.add_field(name="game mode", value=gamemode, inline=True)
-                embed.add_field(name="party size", value=data2['party_size'], inline=True)
-                embed.timestamp = datetime.datetime.utcnow()
-                embed.set_footer(text='\u200b')
-                await ctx.send(embed=embed)
-            else:
-                score=f"[{data2['score_ally_team']}:{data2['score_enemy_team']}]"
-                if data2["custom_game"]=="true":
-                    sym="✅"
-                else:
-                    sym="❌"
-                
-                embed=discord.Embed(title=data2['current_state'], description=f"custom {sym}")
-                embed.set_thumbnail(url=gamemode_icons[gamemode])
-                embed.set_author(name="{} #{}".format(details['display_name'],details['tag'])) 
-                embed.add_field(name="game mode", value=f"{gamemode} {score}", inline=True)
-                embed.add_field(name='\b', value='\b',inline=True)
-                embed.add_field(name="MAP", value=data2['map'], inline=True)
-                #embed.timestamp = datetime.datetime.utcnow()
-                embed.set_footer(url="https://https://media.valorant-api.com/maps/7eaecc1b-4337-bbf6-6ab9-04b8f06b3319/listviewicon.png")
-                await ctx.send(embed=embed)
-                         
+                    gamemode=data2['gamemode']
+                    score=f"[{data2['score_ally_team']}:{data2['score_enemy_team']}]"
+                    if data2["custom_game"]=="true":
+                        sym="✅"
+                    else:
+                        sym="❌"
+                    
+                    embed=discord.Embed(title=data2['current_state'], description=f"custom {sym}")
+                    embed.set_thumbnail(url=gamemode_icons[gamemode])
+                    embed.set_author(name="{} #{}".format(details['display_name'],details['tag'])) 
+                    embed.add_field(name="game mode", value=f"{gamemode} {score}", inline=True)
+                    embed.add_field(name='\u200b', value='\u200b',inline=True)
+                    embed.add_field(name="MAP", value=data2['map'], inline=True)
+                    embed.set_image(url=maps[data2['map']])
+                    embed.timestamp = datetime.datetime.utcnow()
+                    await ctx.send(embed=embed)
+
+            except Exception as e:
+                print(e)         
         else:
             await ctx.send("SERVER ERROR")
 
@@ -139,7 +143,7 @@ async def stats(ctx,member:discord.Member=None):
         await ctx.send(embed=embed)
  
 @bot.command()
-async def matches(ctx,member:discord.Member=None):
+async def history(ctx,member:discord.Member=None):
 
     if member is None:
         member=ctx.message.author
@@ -164,16 +168,13 @@ async def matches(ctx,member:discord.Member=None):
             await ctx.send(file=image,embed=embed)
 
 @bot.command()
-async def plot_test(ctx, *args):
-    x = args
-    try:
-        image = discord.File("test.png")
-        plt.bar(np.arange(len(x)), x)
-        plt.savefig("test.png")
-        plt.close()
-        await ctx.send(file=image)
-    except Exception as e:
-        print(e)
-              
+async def match(ctx):
+    details=db.get_record(ctx.message.author.id)
+    if details is None:
+        await ctx.send(f'{ctx.message.author.mention} has not linked their account')
+    else:
+        try:
+            p1=await match(details['display_name'],details['tag'],details['details']['region'])
+        except Exception as e:
+            print(e)      
 bot.run(token)
-
