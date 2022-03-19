@@ -8,17 +8,21 @@ This bot is currently not hosted publicly as the API has a rate-limit and it isn
 Feel free to clone or fork and use this code at your own discretion. Reach me out on discord (Cn0n#6790) if you find any of the endpoints to be deprecated or if you have any queries/feedback.
 
 ## Features
-Simple user-game account linking
-![link](https://user-images.githubusercontent.com/81007178/159135502-73d271e4-0067-4a0c-8b8d-bceea046b907.png)
+> Simple user-game account linking
+>
+> <img src='https://user-images.githubusercontent.com/81007178/159135502-73d271e4-0067-4a0c-8b8d-bceea046b907.png' width='245.25' height='111'>
 
-Live match tracking
-![live](https://user-images.githubusercontent.com/81007178/159135498-d164c6b5-72f7-4ade-8b24-922ba6d41952.png)
+> Live match tracking
+>
+> <img src='https://user-images.githubusercontent.com/81007178/159135498-d164c6b5-72f7-4ade-8b24-922ba6d41952.png' width='489' height='496.5'>
 
-Match History Analysis
-![history](https://user-images.githubusercontent.com/81007178/159135479-8da10aa9-1b19-4a26-ad15-81793d8bab1a.png)
+> Match History Analysis
+>
+> <img src='https://user-images.githubusercontent.com/81007178/159135479-8da10aa9-1b19-4a26-ad15-81793d8bab1a.png' width='472.5' height='369.75'>
 
-User Statistics
-![stats](https://user-images.githubusercontent.com/81007178/159135501-7545f4f6-f9e5-4a1c-871d-7e36193ccd56.png)
+> User Statistics
+>
+> <img src='https://user-images.githubusercontent.com/81007178/159135501-7545f4f6-f9e5-4a1c-871d-7e36193ccd56.png' width='391.5' height='335.25'>
 
 ## Commands
 ```
